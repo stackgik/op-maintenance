@@ -1,0 +1,105 @@
+"use client";
+import { Mail } from "lucide-react";
+import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { RegisterSchema, RegisterSchemaType } from "@/lib/zod/authSchema";
+import FormError from "../FormError";
+import FormHeader from "../FormHeader";
+import { registerUser } from "@/actions/auth";
+import toast from "react-hot-toast";
+
+const Register = () => {
+  //prettier-ignore
+  const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<RegisterSchemaType>({
+    mode: "all",
+    resolver: zodResolver(RegisterSchema),
+  });
+
+  const onHandleSubmit = async (data: RegisterSchemaType) => {
+    try {
+      await registerUser(data.email);
+      toast.success("Check your email to verify.");
+    } catch (err) {
+      toast.error("Something went wrong");
+    } finally {
+      reset();
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Logo */}
+        <FormHeader />
+
+        {/* Register Form */}
+        <div className="bg-white rounded-2xl p-8 border border-gray-100">
+          <h1 className="text-2xl text-gray-900 mb-1">Create Account</h1>
+          <p className="text-gray-600 mb-6">Register with your Lagride email</p>
+
+          <form onSubmit={handleSubmit(onHandleSubmit)} className="space-y-4">
+            {/* Email Input */}
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm text-gray-700 mb-2"
+              >
+                Company Email Address
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  {...register("email")}
+                  id="email"
+                  type="email"
+                  placeholder="yourname@lagride.com.ng"
+                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4096FF] focus:border-transparent transition-all"
+                />
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                * Only @lagride.com.ng email addresses are allowed
+              </p>
+
+              {errors.email && <FormError msg={errors.email.message} />}
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="w-full py-3 bg-[#4096FF] text-white rounded-lg hover:bg-[#2575e8] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Creating Account..." : "Create Account"}
+            </button>
+          </form>
+
+          {/* Login Link */}
+          <div className="mt-6 pt-6 border-t border-gray-200 text-center">
+            <p className="text-gray-600">
+              Already have an account?{" "}
+              <Link
+                href="/"
+                className="text-[#4096FF] hover:text-[#2575e8] transition-colors"
+              >
+                Sign in here
+              </Link>
+            </p>
+          </div>
+        </div>
+
+        {/* Back to Home */}
+        <div className="text-center mt-6">
+          <Link
+            href="/"
+            className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
+          >
+            ← Back to Home
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Register;

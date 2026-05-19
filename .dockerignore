@@ -1,0 +1,16 @@
+node_modules
+.next
+
+# git
+.git
+.gitignore
+
+# env files (never bake secrets into an image)
+.env.local
+
+# local dev config
+.eslintr.config.mjs
+next.config.ts
+
+# docs
+README.md
