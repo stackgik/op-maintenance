@@ -9,8 +9,7 @@ node_modules
 .env.local
 
 # local dev config
-.eslintr.config.mjs
-next.config.ts
+.eslintrc.config.mjs
 
 # docs
 README.md

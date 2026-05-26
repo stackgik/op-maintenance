@@ -49,6 +49,6 @@ CMD [ "node", "server.js" ]
 #* THE NEXT STEPS FROM HERE ON ARE AS FOLLOWS
 # 1. Fire up the Docker Desktop
 # 2. Build the Image, specifying the Image TAG and the location of the Dockerfile (.)
-# ==> docker build -t op_maintenance .
+# ==> docker build -t op_maintenance . # the period at the end tells Docker where to find the dockerfile(current directory)
 # 3. Run the Image while loading env file, if any.
 # ==> docker run -p 9090:9090 --env-file .env/.env.local op_maintenance
