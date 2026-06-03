@@ -1,11 +1,16 @@
 import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/dashboard";
+
+  const headersList = await headers();
+  const host = headersList.get("host");
+  const protocol = headersList.get("x-forwarded-proto") || "http";
+  const origin = `${protocol}://${host}`;
 
   if (code) {
     const cookieStore = await cookies();
@@ -34,6 +39,5 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // Something went wrong
   return NextResponse.redirect(`${origin}/auth/error`);
 }
